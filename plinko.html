@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WA - Survey Kepuasan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            transition: opacity 1s ease-in-out;
+        }
+        .bar-container {
+            width: 100%;
+            background: #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+            height: 30px;
+            position: relative;
+        }
+        .bar {
+            width: 100%;
+            height: 100%;
+            background: red;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 0.3s linear;
+        }
+        .hidden {
+            display: none;
+        }
+        .btn {
+            background: green;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        .btn:disabled {
+            background: gray;
+            cursor: not-allowed;
+        }
+        #quota-info {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: red;
+        }
+        .thank-you {
+            display: none;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .thank-you img {
+            width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="mainContainer">
+    <h2>Survey Kepuasan</h2>
+    <p>Klik tombol di bawah untuk mulai Survey!</p>
+    <button class="btn" id="startButton">Mulai Survey</button>
+    
+    <div class="bar-container hidden" id="barContainer">
+        <div class="bar" id="bar">100%</div>
+    </div>
+
+    <p id="status" class="hidden">Menghubungkan ke server...</p>
+    <p id="quota-info" class="hidden">Kuota tersedot: 0 MB</p>
+</div>
+
+<!-- Tampilan Ucapan Terima Kasih + GIF -->
+<div class="thank-you" id="thankYouContainer">
+    <h2>Terima Kasih!</h2>
+    <p>Semoga berbagi ini bermanfaat bagi kita semua, Amal ibadah nya menjadi yang terbaik, coding by Jgrage !</p>
+    <img src="https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif" alt="Happy Person GIF">
+</div>
+
+<script>
+    document.getElementById("startButton").addEventListener("click", function() {
+        var bar = document.getElementById("bar");
+        var barContainer = document.getElementById("barContainer");
+        var status = document.getElementById("status");
+        var quotaInfo = document.getElementById("quota-info");
+        var startButton = this;
+        var mainContainer = document.getElementById("mainContainer");
+        var thankYouContainer = document.getElementById("thankYouContainer");
+
+        // Tampilkan elemen yang tersembunyi
+        barContainer.classList.remove("hidden");
+        status.classList.remove("hidden");
+        quotaInfo.classList.remove("hidden");
+
+        // Reset tampilan
+        bar.style.width = "100%";
+        bar.innerText = "100%";
+        status.innerText = "Menghubungkan ke server...";
+        quotaInfo.innerText = "Kuota tersedot: 0 MB";
+        startButton.disabled = true;
+        startButton.innerText = "Sedang Memproses...";
+
+        // Animasi progres
+        let percentage = 100;
+        let quotaUsed = 0;
+        let messages = [
+            "Mengakses sistem...",
+            "Memproses data...",
+            "Mengunduh paket survey...",
+            "Survey dalam proses...",
+            "Kuota sedang digunakan...",
+            "Sabar ya Sedang Dalam Proses Berbagi"
+        ];
+        let messageIndex = 0;
+
+        let interval = setInterval(() => {
+            percentage -= 1;
+            quotaUsed += 10; // Simulasi kuota berkurang
+            if (percentage <= 0) {
+                percentage = 0;
+                clearInterval(interval);
+                status.innerText = "Terima Kasih  telah Berbagi!";
+
+                // Sembunyikan tampilan utama
+                setTimeout(() => {
+                    mainContainer.style.opacity = "0";
+                    setTimeout(() => {
+                        mainContainer.style.display = "none";
+                        // Tampilkan ucapan terima kasih
+                        thankYouContainer.style.display = "block";
+                        setTimeout(() => {
+                            thankYouContainer.style.opacity = "1";
+                        }, 100);
+                    }, 1000);
+                }, 1500);
+            } else {
+                status.innerText = messages[messageIndex] || messages[messages.length - 1];
+                messageIndex = Math.min(messageIndex + 1, messages.length - 1);
+            }
+            bar.style.width = percentage + "%";
+            bar.innerText = percentage + "%";
+            quotaInfo.innerText = `Kuota tersedot: ${quotaUsed} MB`;
+        }, 150);
+    });
+</script>
+
+</body>
+</html>
